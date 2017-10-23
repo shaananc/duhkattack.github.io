@@ -14,29 +14,256 @@
   <body>
       <header id="top">
         <h1>The DUHK Attack</h1>
-        <div class="logo">
+        <div class="logo"></div>
+<h2 id="subheader">Don't Use Hard-coded Keys</h2>
       </header>
       
-      <section id="teaser" style="text-align:center; margin-top: 50px;">
-	<h2>Making A Splash:
-	  October 23, 2017, 2PM EST</h2>
+      <section id="intro" style="">
+            <ul class="toc" style="text-align:center">
+                <li><a href="#paper">Paper</a>
+          </li><li><a href="#question-answer">Q&amp;A</a></li>
+        </ul>
+        </section>
+
+       <section>
+
+         <p>DUHK (Don't Use Hard-coded Keys) is a vulnerability that
+         affects devices using the ANSI X9.31 Random Number Generator
+         (RNG) in conjunction with a hard-coded <i>seed key</i>.  The
+         ANSI X9.31 RNG is an algorithm that until recently was
+         commonly used to generate cryptographic keys that secure VPN
+         connections and web browsing sessions, preventing third
+         parties from reading intercepted communications.</p>
+
+        <p>DUHK allows attackers to recover secret encryption keys
+        from vulnerable implementations and decrypt and read
+        communications passing over VPN connections or encrypted web
+        sessions. The encrypted data could include sensitive business
+        data, login credentials, credit card data and other
+        confidential content.</p>
+        
+        <p>The affected implementations were all historically compliant with
+	  FIPS, the Federal Information Processing Standards.</p>
+        
+        <h3>Who is vulnerable?</h3>
+
+        <p>Traffic from any VPN using FortiOS 4.3.0 to FortiOS 4.3.18
+        can be decrypted by a passive network adversary who can
+        observe the encrypted handshake traffic.  Other key recovery
+        attacks on different protocols may also be possible. </p>
+        
+        <p>We also found eleven other historically FIPS-certified
+        implementations that document hard-coded X9.31 RNG seed keys in their
+        products.  We give the full list in our paper.</p>
+
+        <p>Users of affected products should apply the latest software updates.</p>
+        
+        <p>A device is vulnerable to DUHK if:</p>
+        
+        <ul class="illustrated">
+          <li>It uses the X9.31 random number generator</li>
+        </ul>
+        
+        <div style="margin-top:10px; margin-bottom: 10px;"><b>and</b></div>
+
+        <ul class="illustrated">
+          <li>The <i>seed key</i> used by the generator is hard-coded into the implementation</li>
+        </ul>
+
+
+        <div style="margin-top:10px; margin-bottom: 10px;"><b>and</b></div>
+
+        <ul class="illustrated">
+            <li>The output from the random number generator is directly used to generate cryptographic keys</li>
+        </ul>
+        
+         <div style="margin-top:10px; margin-bottom: 10px;"><b>and</b></div>
+        
+        <ul class="illustrated">
+            <li>At least some of the random numbers before or after those used to make the keys are transmitted unencrypted. This is typically the case for SSL/TLS and IPsec.</li>
+        </ul>
+
+
+<section id="paper" style="margin-top:30px">
+        <h2>Full technical paper</h2>
+
+        <p><a href="/paper.pdf"><b>Practical state recovery attacks against legacy RNG implementations</b></a> <small>[PDF]</small><br> By
+        Shaanan&nbsp;Cohney,
+        Nadia&nbsp;Heninger, and
+        Matthew D.&nbsp;Green</p>
+
+        <p>The team can be contacted at <a href=mailto:mail@DUHKattack.com><b>mail@DUHKattack.com</b></a>.</p>
+
       </section>
 
-      <div class="footer-logo"></div>
+      <section id="advice">
+          <h2 style="color:black;">Our Advice</h2>
+          <h3>Are you a crypto implementer?</h3>
+              <p>Developers of cryptographic software should stop using the X9.31 generator.  It was removed from the list of FIPS-approved random number generation algorithms in January 2016.  If you must use a block cipher-based RNG, don't use a hard-coded key, and regenerate the key frequently.</p>
+              
+          <h3>Are you an end user of cryptography?</h3>
+              <p>Regularly apply software updates. It's good practice and will protect you against flaws that
+              are of greater risk to you than this one.</p>
+              
+          <h3>Are you a company worried about FIPS compliance?</h3>
+          <p>Update your products to comply with the latest standards.  We don't know of any backdoors in the current list of recommended algorithms.</p>
+          
+          <h3>Are you a government with a desire for large scale decryption capabilities?</h3>
+          <p>Weakening, sabotaging, backdooring, or frontdooring encryption standards may harm both the overall security of your country as well as your reputation!</p>
+      
+      </section>
+      
 
-      <footer style="text-align: center;">
-        <p class="text-muted">Last updated October 22, 2017.
+      <section id="question-answer">
+        <h2>Q&amp;A</h2>
+        <ul class="question-list">
+          <li><a href="#faq-acronym">What does DUHK stand for?</a></li>
+          <li><a href="#faq-details">What are the technical details?</a></li>
+          <li><a href="#faq-contact">How can I contact the DUHK research team?</a></li>
+          <li><a href="#faq-cve">Is there a CVE for DUHK?</a></li>
+          <li><a href="#faq-practical">How easy is it to carry out the attack? Is it practical?</a></li>
+          <li><a href="#faq-exploited">Is the vulnerability currently being exploited by attackers?</a></li>
+	  <li><a href="#faq-backdoor">Is this a backdoor?</a></li>
+          <li><a href="#faq-privatekey">Does DUHK allow an attacker to steal the server&rsquo;s private key?</a></li>
+          <li><a href="#faq-detect">Can I detect if someone has exploited this against me?</a></li>
+          <li><a href="#faq-logo">Can I get a high resolution copy of the logo?</a></li>
+	  <li><a href="#faq-swag">Where can I buy DUHK swag?</a></li>
+	  <li><a href="#faq-song">Do you have a theme song?</a></li>
+          <li><a href="#faq-fips">My device is certified FIPS compliant. Am I still vulnerable?</a></li>
+          <li><a href="#faq-legacy">Why should I care about an attack that targets only legacy devices?</a></li>
+          <li><a href="#faq-code">Are you planning to release the code for your implementation of the attack?</a></li>
+          <li><a href="#faq-factors">What factors contributed to DUHK?</a></li>
+          <li><a href="#faq-references">Where else can I learn about DUHK?</a></li>
+        </ul>
+
+        <h4><a name="faq-acronym"></a>What does DUHK stand for?</h4>
+
+        <p>DUHK stands for <b>D</b>on't <b>U</b>se <b>H</b>ard-coded <b>K</b>eys</p>
+
+        <h4><a name="faq-details"></a>What are the technical details?</h4>
+
+        <p>Full details are available in our technical paper.
+        With a summary below:</p>
+        
+        <p>The ANSI X9.31 PRNG is a pseudorandom number generator algorithm design that was included in various forms on cryptographic standards and listed as an approved RNG for FIPS certification for decades. This PRNG has a vulnerability that was described by Kelsey, Schneier and Hall as early as 1998. The RNG uses block cipher encryption with a "seed key" to update a state value from a timestamp.  When this "seed key" is known to an attacker, she can recover all previous and future outputs of the generator from 16 bytes of output and a guess for the timestamp.</p>
+        
+        
+        <p>The general DUHK attack is a state recovery attack against implementations of the X9.31 RNG. It allows an attacker who knows the AES or DES key used by the implementation to recover the secret internal state of the random number generator after observing some output.</p>
+        
+	<p>The specific attack against the IKEv2 handshake as implemented in FortiOS v4 works as follows:
+
+	<p>
+	  <ol>
+	    <li>The attacker reverse-engineers a firmware image and extracts the hard-coded AES encryption key.</li>
+	    <li>The attacker passively observes both sides of an IKEv2 handshake.</li>
+	    <li>The SPI and nonce fields in the IKEv2 handshake are raw RNG output.  The attacker brute forces a range of timestamps at the microsecond granularity to recover the internal state of the RNG from these outputs, and confirms against the raw outputs.  This step required 2<sup>24</sup> guesses in our experiments.</li>
+	    <li>The secret exponent in the IKEv2 Diffie-Hellman key exchange is generated immediately after these values.  The attacker brute forces another timestamp to recover the Diffie-Hellman secret which it confirms against the public key.  This step required 2<sup>5</sup> guesses in our experiments.</li>
+	    <li>The attacker can then compute the shared secret and derived sesion keys, and begin to decrypt traffic.</li>
+	  </ol>
+	</p>
+
+        <h4><a name="faq-contact"></a>How can I contact the DUHK research team?</h4>
+
+        <p>DUHK was developed by researchers at the University of Pennsylvania and Johns Hopkins University:
+          <a href="https://cohney.info/">Shaanan&nbsp;Cohney</a>,
+          <a href="https://www.cis.upenn.edu/~nadiah/">Nadia&nbsp;Heninger</a>, and
+          <a href="https://isi.jhu.edu/~mgreen/">Matthew D.&nbsp;Green</a>.
+        </p>
+
+        <p>The team can be contacted at <a href=mailto:mail@DUHKattack.com><b>mail@DUHKattack.com</b></a>.</p>
+
+        <h4><a name="faq-cve"></a>Is there a CVE for DUHK?</h4>
+
+        <p>Yes. The DUHK attack for Fortinet FortiGate devices was
+        assigned <a href="http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8492">CVE-2016-8492</a>.</p>
+
+        <h4><a name="faq-practical"></a>How easy is it to carry out the attack? Is it practical?</h4>
+
+        <p>Yes. Our attack against Fortigate device can be carried out on a modern computer in about four minutes. In the more general case, the practicality depends on the specific implementation details of the RNG.</p>
+
+        <h4><a name="faq-exploited"></a>Is the vulnerability currently being exploited by attackers?</h4>
+
+        <p>We have no evidence to suggest that this is the case. You should apply the latest software update anyway.</p>
+
+	<h4><a href="#faq-backdoor"></a>Is this a backdoor?</h4>
+
+	<p>We prefer to think of it as a front door secured by a hotel minibar key.  More seriously, there is no way of knowing whether this type of implementation flaw or the standards that failed to account for it is intentional or has been exploited.</p>
+
+        <h4><a name="faq-privatekey"></a>Does DUHK allow an attacker to steal the server&rsquo;s long-term private keys?</h4>
+
+        <p>No. DUHK allows an attacker to decrypt one connection at a
+        time by compromising the key exchange.</p>
+
+
+        <h4><a name="faq-detect"></a>Can I detect if someone has exploited this against me?</h4>
+
+        <p>No.  This is an entirely passive attack.</p>
+        
+        <h4><a name="faq-detect"></a>Can I get a high resolution copy of the logo?</h4>
+        
+        <p>Please visit <a href="https://emojipedia.org/duck/">Emojipedia</a> and set your font size appropriately.</p>
+
+	<h4><a name="faq-swag"></a>Where can I buy DUHK swag?</h4>
+
+	<p>This random person we don't know is selling <a href="https://www.amazon.com/Mallard-Emoji-Funny-Hunting-T-Shirt/dp/B072T4ML4H/">duck emoji tshirts</a>.</p>
+	
+	<h4><a name="faq-song"></a>Do you have a theme song?</h4>
+
+	<p><a href="https://www.youtube.com/watch?v=bf9d7rSf_Ks">Yes.</a>  Also a <a href="https://www.youtube.com/watch?v=ZKcZ2BHuVkA">techno remix</a>.</p>
+	
+        <h4><a name="faq-fips"></a>My device has a FIPS compliant mode, Am I still vulnerable?</h4>
+
+        <p>Potentially. The X9.31 RNG was deprecated by NIST in 2011
+        and removed from the list of FIPS-approved RNGs in 2016.  If
+        your product was certified after January 2016, then it is not
+        vulnerable.  If it was certified for the X9.31 RNG at any
+        time, FIPS certification does not prevent this implementation
+        vulnerability.</p>
+
+        <h4><a name="faq-legacy"></a>Why should I care about an attack that targets only legacy devices?</h4>
+
+        <p>Internet scanning research shows large number of legacy devices are used many years after they reach end of support from manufacturers. Our scans found at least 23,000 devices with a publicly visible IPv4 address running a vulnerable version of FortiOS.</p>
+        
+        <p>More generally, this attack underscores the need to design cryptographic standards to preclude known implementation vulnerabilities.</p>
+
+        <h4><a name="faq-code"></a>Are you planning to release the code for your
+        implementation of the attack?</h4>
+
+        <p>No.</p>
+
+
+        <h4><a name="faq-factors"></a>What factors contributed to DUHK?</h4>
+<p> The DUHK attack is a historical failure of the federal
+standardization process for cryptography.  The general vulnerability
+has been known for at least two decades, yet none of the descriptions
+of the algorithm we could find mentioned that the seed key should be
+unpredictable to the attacker.</p>
+
+<p>This vulnerability should be viewed in the context of a multi-year line of research showing how <a href="http://dualec.org">subverted standards</a>, <a href="https://weakdh.org/">parameter choices</a>, <a href="http://dualec.org/DualECJuniper-draft.pdf">subtle vulnerabilities</a>, and implementation flaws might allow state-level actors to passively decrypt encrypted network traffic.</p>
+
+        <h4><a name="faq-references"></a>Where else can I learn about DUHK?</h4>
+
+        <ul>
+		  <li><a href="http://fortiguard.com/psirt/FG-IR-16-067">Fortigate PSIRT Advisory</a></li>
+        </ul>
+
+      </section>
+
+      <div class="logo"></div>
+
+      <footer style="text-align:center;">
+        <p class="text-muted">Last updated October 23, 2017.
       </footer>
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-3806903-6"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    
+    gtag('config', 'UA-3806903-6');
+    </script>
 
-  gtag('config', 'UA-3806903-6');
-</script>
   </body>
 </html>
-
